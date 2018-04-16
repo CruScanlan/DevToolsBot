@@ -4,6 +4,7 @@
   "token": "",
   "logging": {
     "logTimeZone": "Australia/Brisbane",
-    "TimeFormat": "D-M-YYYY:H:m:s"
+    "TimeFormat": "D-M-YYYY:H:m:s",
+    "sentryDSN": ""
   }
 }

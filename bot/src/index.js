@@ -2,6 +2,9 @@ const config = require("../config.json");
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 
+Raven = require('raven');
+Raven.config(config.logging.sentryDSN).install();
+
 bot.on('ready', () => {
     console.log('Bot Has Started Running!');
 });
