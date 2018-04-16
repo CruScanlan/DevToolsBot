@@ -1,0 +1,26 @@
+{
+  "name": "dev-tools-bot",
+  "version": "0.0.1",
+  "description": "A discord bot to add tools and integrations for developers",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cruzercru/DevToolsBot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "developer",
+    "tools",
+    "integrations"
+  ],
+  "author": "Cru Scanlan",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Cruzercru/DevToolsBot/issues"
+  },
+  "homepage": "https://github.com/Cruzercru/DevToolsBot#readme"
+}
