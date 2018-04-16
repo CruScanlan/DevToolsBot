@@ -22,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/Cruzercru/DevToolsBot/issues"
   },
-  "homepage": "https://github.com/Cruzercru/DevToolsBot#readme"
+  "homepage": "https://github.com/Cruzercru/DevToolsBot#readme",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "raven": "^2.5.0"
+  }
 }
