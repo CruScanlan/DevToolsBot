@@ -62,3 +62,6 @@ typings/
 
 # Config file
 config.json
+
+# Datagrip
+/datagrip

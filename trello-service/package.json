@@ -1,7 +1,7 @@
 {
-  "name": "dev-tools-bot-bot",
-  "version": "0.0.1",
-  "description": "A discord bot to add tools and integrations for developers",
+  "name": "dev-tools-bot-trello",
+  "version": "1.0.0",
+  "description": "A trello handling microservice for dev tools bot",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,13 +10,6 @@
     "type": "git",
     "url": "git+https://github.com/Cruzercru/DevToolsBot.git"
   },
-  "keywords": [
-    "discord",
-    "bot",
-    "developer",
-    "tools",
-    "integrations"
-  ],
   "author": "Cru Scanlan",
   "license": "Apache-2.0",
   "bugs": {
@@ -25,9 +18,6 @@
   "homepage": "https://github.com/Cruzercru/DevToolsBot#readme",
   "dependencies": {
     "cote": "^0.16.2",
-    "discord.js": "^11.3.2",
-    "erlpack": "github:hammerandchisel/erlpack",
-    "raven": "^2.5.0",
-    "uws": "^9.147.0"
+    "trello": "^0.8.0"
   }
 }

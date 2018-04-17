@@ -1,9 +1,23 @@
 const config = require("../config.json");
+
+let cote = require('cote');
+let botServiceSubscriber = new cote.Subscriber({
+    name: 'Bot Service Subscriber',
+    subscribesTo: ['trello-card-added']
+});
+
+/*
+botServiceSubscriber.on('trello-card-added', (req) => {
+    console.log(req);
+    bot.guilds.find('id', '246919128701599744').channels.find('id', '246919128701599744').send(req);
+});
+*/
+
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 
-Raven = require('raven');
-Raven.config(config.logging.sentryDSN).install();
+let Raven = require('raven');
+//Raven.config(config.logging.sentryDSN).install();
 
 bot.on('ready', () => {
     console.log('Bot Has Started Running!');
