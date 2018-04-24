@@ -34,10 +34,10 @@ let commandRegistry = new CommandRegistry(bot);
 
 commandRegistry.registerGroups({
     groups: [
-        'test'
+        {id: 'test', name:'Test'}
     ],
     commandsPath: path.join(__dirname, './commands')
-});
+}).registerCommands();
 
 let Raven = require('raven');
 //Raven.config(config.logging.sentryDSN).install();

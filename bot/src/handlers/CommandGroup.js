@@ -51,3 +51,5 @@ class CommandGroup {
         return name;
     }
 }
+
+module.exports = CommandGroup;

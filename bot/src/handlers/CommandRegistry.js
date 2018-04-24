@@ -2,7 +2,8 @@ const discord = require('discord.js');
 let fs = require('fs');
 let path = require('path');
 
-const CommandGroup = require('CommandGroup');
+const CommandGroup = require('./CommandGroup');
+let CommandDispatcher = require('./CommandDispatcher');
 
 class CommandRegistry {
     constructor(client) {
@@ -41,6 +42,11 @@ class CommandRegistry {
         this._groupsRegistered = false;
     }
 
+    /**
+     * Registers all the groups and command path
+     * @param options
+     * @returns {CommandRegistry}
+     */
     registerGroups(options) {
         if(this._groupsRegistered) throw new Error(`Command groups have already been registered`);
         if(!options) throw new Error(`options was not defined`);
@@ -57,13 +63,11 @@ class CommandRegistry {
             if(typeof options.groups[i] !== 'object') throw new TypeError(`group at element ${i+1} is not of type object`);
             if(!options.groups[i].id) throw new Error(`groups.id does not exist at element ${i+1}`);
             if(!options.groups[i].name) throw new Error(`groups.name does not exist at element ${i+1}`);
-            if(!fs.existsSync(path.join(this.commandsPath, `./${options.groups[i].id}`))) throw new Error(`no command path exists for group ${i+1}`);
+            if(!fs.existsSync(this._getGroupDirectoryPath(options.groups[i].id))) throw new Error(`no command path exists for group ${i+1}`);
         }
-
         this._registerCommandGroups(options.groups);
-
-
         this._groupsRegistered = true;
+        return this;
     }
 
     /**
@@ -78,8 +82,46 @@ class CommandRegistry {
         return path;
     }
 
-    _registerCommand(command) {
+    /**
+     * Registers all commands in the command path
+     * @returns {CommandRegistry}
+     */
+    registerCommands() {
+        if(!this._groupsRegistered) throw new Error(`command groups must be registered before commands`);
+        let commandGroups = this.commandGroups.array();
+        for(let i=0; i<commandGroups.length; i++) { //iterate through groups
+            let groupDirectoryPath = this._getGroupDirectoryPath(commandGroups[i].id);
+            let groupDirectoryFiles = fs.readdirSync(groupDirectoryPath);
+            for(let j=0; j<groupDirectoryFiles.length; j++) { //iterate through files in a groups directory
+                let fileSplit = groupDirectoryFiles[j].split('.');
+                let fileExt = fileSplit[fileSplit.length-1];
+                if(fileExt !== 'js') continue; //exclude any file without a .js extension
+                this._registerCommand(commandGroups[i].id, `${groupDirectoryPath}\\${groupDirectoryFiles[j]}`); //register file as a command
+            }
+        }
+        return this;
+    }
 
+    /**
+     * Registers a single command
+     * @param groupID
+     * @param filePath
+     * @private
+     */
+    _registerCommand(groupID, filePath) {
+        let commandModule;
+        try {
+            commandModule = require(filePath);
+        } catch(e) {
+            throw new Error(`Error when loading command at ${filePath} | ${e.stack}\n\n |`);
+        }
+        let command = new commandModule(this.client);
+        if(this.commands.find(cnd => cnd.name === command.name)) throw new Error(`Command ${command.name} is already registered`);
+        let group = this.commandGroups.find(group => group.id === groupID);
+        if(!group) throw new Error(`Group ${command.groupID} is not registered`);
+        command.group = group;
+        this.commands.set(command.name, command);
+        group.commands.set(command.name, command);
     }
 
     /**
@@ -89,7 +131,7 @@ class CommandRegistry {
      */
     _registerCommandGroups(groups) {
         for(let i=0; i<groups.length; i++) {
-            this._registerCommandGroup(groups[i].id, groups[i].name);
+            this._registerCommandGroup(groups[i].id, groups[i].name); //iterate through groups and add them
         }
     }
 
@@ -102,9 +144,23 @@ class CommandRegistry {
      */
     _registerCommandGroup(id, name) {
         let exists = this.commandGroups.get(id);
-        if(exists) return this.commandGroups.get(id).rename(name);
-        let group = new CommandGroup(this.client, id, name);
-        this.commandGroups.set(id, group);
+        if(exists) return this.commandGroups.get(id).rename(name); //if group already exists, rename it
+        let group = new CommandGroup(this.client, id, name); //create new group
+        this.commandGroups.set(id, group); //add the new group
         return group;
     }
+
+    /**
+     * Gets the directory for a command group
+     * @param groupID
+     * @returns {String}
+     * @private
+     */
+    _getGroupDirectoryPath(groupID) {
+        if(typeof groupID !== 'string') throw new TypeError(`groupID is not of type string`);
+        if(!this.commandsPath) throw new Error(`commandsPath has not been defined`);
+        return path.join(this.commandsPath, `./${groupID}`);
+    }
 }
+
+module.exports = CommandRegistry;
