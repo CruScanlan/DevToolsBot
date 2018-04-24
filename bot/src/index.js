@@ -1,4 +1,5 @@
 const config = require("../config.json");
+const path = require('path');
 
 let cote = require('cote');
 let botServiceSubscriber = new cote.Subscriber({
@@ -27,6 +28,16 @@ bot.on('message', async msg => {
 
 const Discord = require('discord.js');
 const bot = new Discord.Client();
+
+let CommandRegistry = require('./handlers/CommandRegistry');
+let commandRegistry = new CommandRegistry(bot);
+
+commandRegistry.registerGroups({
+    groups: [
+        'test'
+    ],
+    commandsPath: path.join(__dirname, './commands')
+});
 
 let Raven = require('raven');
 //Raven.config(config.logging.sentryDSN).install();
