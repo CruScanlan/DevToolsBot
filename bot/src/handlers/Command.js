@@ -6,7 +6,6 @@ class Command {
          * The client for the command
          * @name Command#client
          * @type {client}
-         * @readonly
          */
         Object.defineProperty(this, 'client', { value: client });
 
@@ -42,9 +41,8 @@ class Command {
         /**
          * All the throttle objects for the Command
          * @type {Map<String, Object>}
-         * @private
          */
-        this._throttles = new Map();
+        this.throttles = new Map();
     }
 
     run(msg, args, client) {
@@ -52,11 +50,29 @@ class Command {
     }
 
     //TODO: Write reload method
-    //TODO: Write throttling method
     /**
      * Reloads the command
      */
     reload() {
+    }
+
+    /**
+     * Returns an existing throttle object for a userID or creates a new one and returns it
+     * @param userID
+     * @returns {Object}
+     */
+    throttle(userID) {
+        let throttle = this.throttles.get(userID);
+        if(!throttle) {
+            throttle = {
+                start: Date.now(),
+                timeout: setTimeout(()=> {
+                    this.throttles.delete(userID);
+                }, this.throttling)
+            };
+            this.throttles.set(userID, throttle);
+        }
+        return throttle;
     }
 }
 

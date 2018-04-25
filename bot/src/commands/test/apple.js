@@ -9,7 +9,7 @@ module.exports = class AppleCommand extends Command {
                 'app',
                 'a'
             ],
-            throttling: 1000
+            throttling: 4000
         })
     }
 

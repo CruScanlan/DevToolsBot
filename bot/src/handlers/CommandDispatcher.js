@@ -34,8 +34,12 @@ class CommandDispatcher {
         if(!this.shouldHandleMessage(msg)) return;
         let msgParsed = this.parseMessage(msg);
         let command = this.getCommand(msgParsed.command);
+        let msgAuthorID = msg.author.id;
         if(!command) return;
+        let throttle = command.throttles.get(msgAuthorID);
+        if(throttle) return msg.reply(`You cannot use this command for another ${((throttle.start+command.throttling-Date.now())/1000).toFixed(1)} seconds.`);
         command.run(msg, msgParsed.args, this.client);
+        command.throttle(msgAuthorID);
     }
 
     /**
@@ -77,8 +81,6 @@ class CommandDispatcher {
         }
         return;
     }
-
-
 }
 
 module.exports = CommandDispatcher;
