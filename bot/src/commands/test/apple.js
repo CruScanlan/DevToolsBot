@@ -6,7 +6,8 @@ module.exports = class AppleCommand extends Command {
             name: 'Apple',
             group: 'test',
             aliases: [
-                'app'
+                'app',
+                'a'
             ],
             throttling: 1000
         })

@@ -47,7 +47,7 @@ class Command {
         this._throttles = new Map();
     }
 
-    async run(msg, args, client) {
+    run(msg, args, client) {
         throw new Error(`Command does not have a run method`);
     }
 

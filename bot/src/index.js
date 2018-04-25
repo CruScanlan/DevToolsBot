@@ -32,12 +32,13 @@ const bot = new Discord.Client();
 let CommandRegistry = require('./handlers/CommandRegistry');
 let commandRegistry = new CommandRegistry(bot);
 
-commandRegistry.registerGroups({
+commandRegistry.register({
     groups: [
         {id: 'test', name:'Test'}
     ],
-    commandsPath: path.join(__dirname, './commands')
-}).registerCommands();
+    commandsPath: path.join(__dirname, './commands'),
+    commandsPrefix: config.prefix
+});
 
 let Raven = require('raven');
 //Raven.config(config.logging.sentryDSN).install();

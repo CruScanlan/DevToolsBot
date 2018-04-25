@@ -3,7 +3,7 @@ let fs = require('fs');
 let path = require('path');
 
 const CommandGroup = require('./CommandGroup');
-let CommandDispatcher = require('./CommandDispatcher');
+const CommandDispatcher = require('./CommandDispatcher');
 
 class CommandRegistry {
     constructor(client) {
@@ -15,6 +15,12 @@ class CommandRegistry {
          * @readonly
          */
         Object.defineProperty(this, 'client', {value : client});
+
+        /**
+         * Command dispatcher for registry, is defined on register method
+         * @type {CommandDispatcher}
+         */
+        this.commandDispatcher = null;
 
         /**
          * Registered commands
@@ -35,6 +41,12 @@ class CommandRegistry {
         this.commandsPath = null;
 
         /**
+         * The command prefix
+         * @type {String}
+         */
+        this.commandsPrefix = null;
+
+        /**
          * Has the command groups been defined?
          * @type {boolean}
          * @private
@@ -43,11 +55,11 @@ class CommandRegistry {
     }
 
     /**
-     * Registers all the groups and command path
+     * Registers all the groups, command path and commands prefix
      * @param options
      * @returns {CommandRegistry}
      */
-    registerGroups(options) {
+    register(options) {
         if(this._groupsRegistered) throw new Error(`Command groups have already been registered`);
         if(!options) throw new Error(`options was not defined`);
         if(typeof options !== 'object') throw new TypeError(`options must be an object`);
@@ -56,7 +68,11 @@ class CommandRegistry {
         if(options.groups.length < 1) throw new Error(`options.groups array is empty`);
         if(!options.commandsPath) throw new Error(`options.commandsPath was not defined`);
         if(typeof options.commandsPath !== 'string') throw new TypeError(`options.commandsPath must be a string`);
+        if(!options.commandsPrefix) throw new Error(`options.commandPrefix was not defined`);
+        if(typeof options.commandsPrefix !== 'string') throw new TypeError(`options.commandsPrefix must be a string`);
+        if(options.commandsPrefix.length < 1) throw new Error(`options.commandPrefix must be at least 1 char`);
 
+        this.commandsPrefix = options.commandsPrefix;
         this._registerCommandPath(options.commandsPath);
 
         for(let i=0; i<options.groups.length; i++) {
@@ -65,8 +81,13 @@ class CommandRegistry {
             if(!options.groups[i].name) throw new Error(`groups.name does not exist at element ${i+1}`);
             if(!fs.existsSync(this._getGroupDirectoryPath(options.groups[i].id))) throw new Error(`no command path exists for group ${i+1}`);
         }
+
         this._registerCommandGroups(options.groups);
         this._groupsRegistered = true;
+
+        this._registerCommands();
+        this.commandDispatcher = new CommandDispatcher(this.client, this);
+
         return this;
     }
 
@@ -86,7 +107,7 @@ class CommandRegistry {
      * Registers all commands in the command path
      * @returns {CommandRegistry}
      */
-    registerCommands() {
+    _registerCommands() {
         if(!this._groupsRegistered) throw new Error(`command groups must be registered before commands`);
         let commandGroups = this.commandGroups.array();
         for(let i=0; i<commandGroups.length; i++) { //iterate through groups
