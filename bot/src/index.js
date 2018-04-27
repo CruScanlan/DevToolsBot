@@ -12,32 +12,16 @@ botServiceSubscriber.on('trello-card-added', (req) => {
     console.log(req);
     bot.guilds.find('id', '246919128701599744').channels.find('id', '246919128701599744').send(req);
 });
-
-bot.on('message', async msg => {
-    if (msg.author.bot) return;
-
-    if (!msg.content.startsWith(config.prefix)) return;
-    let command = msg.content.split(" ")[0];
-    command = command.slice(config.prefix.length).toLowerCase();
-    let args = msg.content.split(" ").slice(1);
-    let argsJoined = args.join(" ");
-
-    if(command === "test") msg.reply("Test");
-});
 */
 
-const Discord = require('discord.js');
-const bot = new Discord.Client();
-
-let CommandRegistry = require('./handlers/CommandRegistry');
-let commandRegistry = new CommandRegistry(bot);
-
-commandRegistry.register({
-    groups: [
-        {id: 'test', name:'Test'}
+const sbf4d = require('sbf4d');
+const bot = new sbf4d.Client({
+    commandPrefix: '!',
+    owner: '138424630850486272',
+    commandGroups: [
+        {id: 'trello', name:'Trello'}
     ],
-    commandsPath: path.join(__dirname, './commands'),
-    commandsPrefix: config.prefix
+    commandsPath: path.join(__dirname, './commands')
 });
 
 let Raven = require('raven');
