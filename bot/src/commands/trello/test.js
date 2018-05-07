@@ -1,4 +1,4 @@
-let {Command} = require('sbf4d');
+const {Command} = require('sbf4d');
 
 module.exports = class TestCommand extends Command {
     constructor(client) {
@@ -13,6 +13,8 @@ module.exports = class TestCommand extends Command {
     }
 
     run(msg, args) {
-        msg.reply('test');
+        this.client.coteDbRequester.send({type: "db-guilds-get-all"}, (guilds) => {
+            msg.reply(guilds.rows[0].guild_name);
+        })
     }
 };
