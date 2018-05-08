@@ -4,6 +4,8 @@ const cote = require('cote');
 const sbf4d = require('sbf4d');
 const Raven = require('raven');
 
+//Raven.config(config.logging.sentryDSN).install();
+
 let app = new sbf4d.Client({
     commandPrefix: '!',
     owner: '138424630850486272',
@@ -16,11 +18,9 @@ let app = new sbf4d.Client({
 let coteDbRequester = new cote.Requester({
     name: 'db-requester',
     key: "db"
-});
+}, {log: false});
 
 app.coteDbRequester = coteDbRequester;
-
-//Raven.config(config.logging.sentryDSN).install();
 
 app.on('ready', () => {
     console.log('Bot Has Started Running!');

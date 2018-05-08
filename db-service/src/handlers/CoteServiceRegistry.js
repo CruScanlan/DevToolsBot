@@ -50,8 +50,8 @@ class CoteServiceRegistry {
                 res({success: false});
                 throw new Error(e);
             }
-            console.log(dbRes);
-            res({success: true, rows: dbRes.rows, fields: dbRes.fields, sqlString: dbRes.sqlString});
+            if(endpoint.doesReturn) return res({success: true, rows: dbRes.rows, fields: dbRes.fields, sqlString: dbRes.sqlString});
+            res({success: true});
         })
     }
 
