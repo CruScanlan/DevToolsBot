@@ -18,14 +18,29 @@ let app = new sbf4d.Client({
 let coteDbRequester = new cote.Requester({
     name: 'db-requester',
     key: "db"
-}, {log: false});
+}, {log: true});
 
 app.coteDbRequester = coteDbRequester;
 
+let insertAndUpdateGuild = (guild) => {
+    let queryParams = {
+        guild_id: guild.id,
+        guild_name: guild.name,
+        guild_memberCount: guild.memberCount,
+        guild_ownerID: guild.ownerID,
+        guild_region: guild.region
+    };
+    app.coteDbRequester.send({type: "db-guilds-insert-and-update", queryParams}, (res) => {
+        console.log(res);
+    })
+};
+
 app.on('ready', () => {
     console.log('Bot Has Started Running!');
+}).on('guildCreate', guild => {
+    insertAndUpdateGuild(guild);
+}).on('guildUpdate', (oldGuild, newGuild) => {
+    insertAndUpdateGuild(newGuild);
 });
-
-
 
 app.login(config.token);

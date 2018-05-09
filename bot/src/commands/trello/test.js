@@ -13,8 +13,15 @@ module.exports = class TestCommand extends Command {
     }
 
     run(msg, args) {
-        this.client.coteDbRequester.send({type: "db-guilds-get-all"}, (guilds) => {
-            msg.reply(guilds.rows[0].guild_name);
+        let queryParams = {
+            guild_id: msg.guild.id,
+            guild_name: msg.guild.name,
+            guild_memberCount: msg.guild.memberCount,
+            guild_ownerID: msg.guild.ownerID,
+            guild_region: msg.guild.region
+        };
+        this.client.coteDbRequester.send({type: "db-guilds-insert-and-update", queryParams}, (res) => {
+            console.log(res);
         })
     }
 };

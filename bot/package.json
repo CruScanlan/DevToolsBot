@@ -27,7 +27,7 @@
     "cote": "^0.16.2",
     "erlpack": "github:hammerandchisel/erlpack",
     "raven": "^2.5.0",
-    "sbf4d": "^1.0.1",
+    "sbf4d": "^1.0.3",
     "uws": "^9.147.0"
   }
 }
