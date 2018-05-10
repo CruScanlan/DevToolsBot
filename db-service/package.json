@@ -18,7 +18,6 @@
   "homepage": "https://github.com/Cruzercru/DevToolsBot#readme",
   "dependencies": {
     "cote": "^0.16.2",
-    "map-collection": "^1.0.0",
     "mysql": "^2.15.0"
   }
 }

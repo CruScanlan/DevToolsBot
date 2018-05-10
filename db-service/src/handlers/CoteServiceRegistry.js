@@ -1,5 +1,4 @@
 const cote = require('cote');
-const Collection = require('map-collection');
 let mysql = require('./mysql');
 
 class CoteServiceRegistry {
